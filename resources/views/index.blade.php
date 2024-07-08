@@ -37,12 +37,29 @@
         orders: '++id,customerName,orderValue,orderDate'
     });
 
-    // Form submission handler
+    // Form submission handler with validation
     document.getElementById('orderForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const customerName = document.getElementById('customerName').value;
         const orderValue = document.getElementById('orderValue').value;
         const orderDate = document.getElementById('orderDate').value;
+
+        // Validation
+        if (customerName.length < 3) {
+            alert('Customer name must be at least 3 characters long.');
+            return;
+        }
+
+        if (orderValue <= 0) {
+            alert('Order value must be a positive number.');
+            return;
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        if (orderDate > today) {
+            alert('Order date cannot be in the future.');
+            return;
+        }
 
         // Save order to IndexedDB
         await db.orders.add({ customerName, orderValue, orderDate });
