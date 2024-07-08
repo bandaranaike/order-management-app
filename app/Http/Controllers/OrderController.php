@@ -6,9 +6,6 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Jobs\SendOrderToBeeceptor;
 use App\Models\Order;
 use App\Http\Resources\OrderResource;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 
 class OrderController extends Controller
