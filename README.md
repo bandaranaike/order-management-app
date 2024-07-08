@@ -65,4 +65,4 @@ php artisan test
 
 ## Home Page Form
 
-The home page contains a simple form to input order details, store them in IndexedDB and showing in a table. Below is the HTML and JavaScript code for the form
+The home page contains a simple form to input order details, store them in IndexedDB and showing in a table.
