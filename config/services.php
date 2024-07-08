@@ -35,4 +35,6 @@ return [
         ],
     ],
 
+    'beeceptor_url' => env('BEECEPTOR_URL'),
+
 ];

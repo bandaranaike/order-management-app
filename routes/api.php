@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
 
 use App\Http\Controllers\OrderController;
 
-Route::post('/order', [OrderController::class, 'create'])->middleware('auth:api');
+Route::post('/order', [OrderController::class, 'create'])->middleware('auth:sanctum');
 
 Route::post('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken($request->token_name);

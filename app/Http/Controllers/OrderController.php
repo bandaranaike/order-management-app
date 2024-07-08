@@ -2,24 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateOrderRequest;
 use App\Models\Order;
-use Illuminate\Http\Request;
 use App\Http\Resources\OrderResource;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
-    public function create(Request $request)
+    public function create(CreateOrderRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'customer_name' => 'required|string|max:255',
-            'order_value' => 'required|numeric|min:0',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
 
         $order = new Order();
         $order->customer_name = $request->customer_name;
@@ -29,8 +22,22 @@ class OrderController extends Controller
         $order->process_id = rand(1, 10);
         $order->save();
 
-        // Send to third-party API
-        $response = Http::post('https://wibip.free.beeceptor.com/order', [
+        // Send to the Beeceptor
+        $this->sendOrderToBeeceptor($order);
+
+        return new JsonResponse(new OrderResource($order));
+    }
+
+    /**
+     * Send to third-party API Beeceptor
+     * @param Order $order
+     * @return void
+     */
+    private function sendOrderToBeeceptor(Order $order): void
+    {
+        $beeceptorOrderUrl = Config::get('services.beeceptor_url') . '/order';
+
+        Http::post($beeceptorOrderUrl, [
             'Order_ID' => $order->id,
             'Customer_Name' => $order->customer_name,
             'Order_Value' => $order->order_value,
@@ -38,7 +45,5 @@ class OrderController extends Controller
             'Order_Status' => $order->order_status,
             'Process_ID' => $order->process_id,
         ]);
-
-        return new OrderResource($order);
     }
 }
